@@ -30,3 +30,17 @@ A complete **Marketing Mix Modeling (MMM)** project that predicts revenue based 
 1. Install dependencies:
    ```bash
    pip install flask flask-cors joblib numpy scikit-learn pandas
+
+
+🛠 Tech Stack
+
+Python (Scikit-learn, Pandas, NumPy)
+Flask (Backend API)
+HTML + JavaScript (Frontend)
+
+
+📌 Future Improvements
+
+Add budget optimization algorithm
+Deploy as live web app (Streamlit / Render)
+Add more advanced MMM models (Bayesian)
