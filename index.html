@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Marketing Mix Model - Revenue Predictor</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f8f9fa; }
+        h1 { color: #2c3e50; }
+        input, select { padding: 10px; margin: 8px 0; width: 320px; font-size: 16px; }
+        button { padding: 14px 30px; background: #27ae60; color: white; border: none; font-size: 17px; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #219653; }
+        #result { margin-top: 25px; padding: 20px; background: white; border-radius: 8px; font-size: 19px; min-height: 50px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Marketing Mix Model - Revenue Predictor</h1>
+    
+    <form id="predictForm">
+        <input type="number" id="GOOGLE_PAID_SEARCH_SPEND" placeholder="Google Paid Search Spend" required><br>
+        <input type="number" id="GOOGLE_SHOPPING_SPEND" placeholder="Google Shopping Spend" required><br>
+        <input type="number" id="GOOGLE_PMAX_SPEND" placeholder="Google PMax Spend" required><br>
+        <input type="number" id="META_FACEBOOK_SPEND" placeholder="Meta Facebook Spend" required><br>
+        <input type="number" id="META_INSTAGRAM_SPEND" placeholder="Meta Instagram Spend" required><br>
+        
+        <input type="number" id="EMAIL_CLICKS" placeholder="Email Clicks" required><br>
+        <input type="number" id="ORGANIC_SEARCH_CLICKS" placeholder="Organic Search Clicks" required><br>
+        <input type="number" id="DIRECT_CLICKS" placeholder="Direct Clicks" required><br>
+        <input type="number" id="BRANDED_SEARCH_CLICKS" placeholder="Branded Search Clicks" required><br>
+        
+        <input type="number" id="year" placeholder="Year (e.g. 2025)" value="2025" required><br>
+        <input type="number" id="month" placeholder="Month (1-12)" value="5" min="1" max="12" required><br>
+        <input type="number" id="day_of_week" placeholder="Day of Week (0=Mon, 6=Sun)" value="1" min="0" max="6" required><br>
+        
+        <button type="submit">Predict Revenue</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "🔄 Predicting... Please wait.";
+
+            const payload = {
+                "GOOGLE_PAID_SEARCH_SPEND": parseFloat(document.getElementById('GOOGLE_PAID_SEARCH_SPEND').value) || 0,
+                "GOOGLE_SHOPPING_SPEND": parseFloat(document.getElementById('GOOGLE_SHOPPING_SPEND').value) || 0,
+                "GOOGLE_PMAX_SPEND": parseFloat(document.getElementById('GOOGLE_PMAX_SPEND').value) || 0,
+                "META_FACEBOOK_SPEND": parseFloat(document.getElementById('META_FACEBOOK_SPEND').value) || 0,
+                "META_INSTAGRAM_SPEND": parseFloat(document.getElementById('META_INSTAGRAM_SPEND').value) || 0,
+                "EMAIL_CLICKS": parseFloat(document.getElementById('EMAIL_CLICKS').value) || 0,
+                "ORGANIC_SEARCH_CLICKS": parseFloat(document.getElementById('ORGANIC_SEARCH_CLICKS').value) || 0,
+                "DIRECT_CLICKS": parseFloat(document.getElementById('DIRECT_CLICKS').value) || 0,
+                "BRANDED_SEARCH_CLICKS": parseFloat(document.getElementById('BRANDED_SEARCH_CLICKS').value) || 0,
+                "year": parseFloat(document.getElementById('year').value) || 2025,
+                "month": parseFloat(document.getElementById('month').value) || 5,
+                "day_of_week": parseFloat(document.getElementById('day_of_week').value) || 1
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.predicted_revenue !== undefined) {
+                    resultDiv.innerHTML = `<strong>✅ Predicted Revenue: ₹${data.predicted_revenue.toLocaleString('en-IN')}</strong>`;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">Error: ${data.error || 'Unknown error'}</span>`;
+                }
+            } catch (err) {
+                resultDiv.innerHTML = `<span class="error">❌ Cannot connect to server.<br>Make sure mmm_app.py is running.</span>`;
+            }
+        });
+    </script>
+</body>
+</html>
