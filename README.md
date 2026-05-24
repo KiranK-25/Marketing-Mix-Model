@@ -44,3 +44,13 @@ HTML + JavaScript (Frontend)
 Add budget optimization algorithm
 Deploy as live web app (Streamlit / Render)
 Add more advanced MMM models (Bayesian)
+
+
+---
+
+### Final Step: Push README
+
+```bash
+git add README.md
+git commit -m "Add professional README.md"
+git push
